@@ -27,3 +27,5 @@ Radio button with hand-drawn look
 <wired-radio text="Radio Two" checked></wired-radio>
 <wired-radio text="Radio Three" class="blue"></wired-radio>
 ```
+
+View wired-radio-group to see the case where only one radio is selected.
