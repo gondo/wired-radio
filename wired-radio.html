@@ -8,6 +8,12 @@
         font-family: inherit;
       }
 
+       :host(.disabled) {
+        opacity: 0.45 !important;
+        cursor: default;
+        pointer-events: none;
+      }
+
       #container {
         display: inline-block;
         white-space: nowrap;
@@ -27,9 +33,13 @@
       }
 
       path {
-        stroke: currentColor;
+        stroke: var(--wired-radio-icon-color, currentColor);
         stroke-width: 0.7;
         fill: transparent;
+      }
+
+      .filledPath {
+        fill: var(--wired-radio-icon-color, currentColor);
       }
     </style>
     <div id="container" on-click="_toggleCheck">
@@ -48,37 +58,47 @@
           checked: {
             type: Boolean,
             value: false,
-            observer: 'relayout'
+            notify: true,
+            observer: '_onCheckedChange'
           },
           name: String,
           text: String,
           iconSize: {
             type: Number,
-            observer: 'relayout'
+            observer: '_relayout'
+          },
+          disabled: {
+            type: Boolean,
+            value: false,
+            observer: '_onDisableChange'
           }
         };
       }
+
       connectedCallback() {
         super.connectedCallback();
         this._connected = true;
         this.style.opacity = 0;
         Polymer.RenderStatus.beforeNextRender(this, () => {
           setTimeout(() => {
-            this.relayout();
+            this._relayout();
             this.style.opacity = 1;
-          }, 150);
+          }, 100);
         });
       }
+
       disconnectedCallback() {
         super.disconnectedCallback();
         this._connected = false;
       }
+
       _clearNode(node) {
         while (node.hasChildNodes()) {
           node.removeChild(node.lastChild);
         }
       }
-      relayout() {
+
+      _relayout() {
         if (!this._connected) {
           return;
         }
@@ -87,17 +107,39 @@
         this.$.svg.setAttribute("width", s.width);
         this.$.svg.setAttribute("height", s.height);
         _WIRES_.ellipse(this.$.svg, s.width / 2, s.height / 2, s.width, s.height);
-        if (this.checked) {
-          const iw = Math.max(s.width * 0.6, 5);
-          const ih = Math.max(s.height * 0.6, 5);
-          const n = _WIRES_.ellipse(this.$.svg, s.width / 2, s.height / 2, iw, ih);
-          n.style.fill = "currentColor";
+
+        const iw = Math.max(s.width * 0.6, 5);
+        const ih = Math.max(s.height * 0.6, 5);
+        const n = _WIRES_.ellipse(this.$.svg, s.width / 2, s.height / 2, iw, ih);
+        n.classList.add("filledPath");
+        this._dot = n;
+        this._updateCheckVisibility();
+      }
+
+      _onCheckedChange() {
+        if (this._dot) {
+          this._updateCheckVisibility();
+        } else {
+          this._relayout();
         }
       }
+
+      _updateCheckVisibility() {
+        this._dot.style.display = this.checked ? "" : "none";
+      }
+
       _toggleCheck() {
         this.set("checked", !(this.checked || false));
         const event = new CustomEvent('change', { bubbles: true, composed: true, checked: this.checked, detail: { checked: this.checked } });
         this.dispatchEvent(event);
+      }
+
+      _onDisableChange() {
+        if (this.disabled) {
+          this.classList.add("disabled");
+        } else {
+          this.classList.remove("disabled");
+        }
       }
     }
     window.customElements.define(WiredRadio.is, WiredRadio);

@@ -14,6 +14,11 @@ Radio button with hand-drawn look
       .blue {
         color: #0d47a1;
       }
+
+      .prplgrn {
+        color: green;
+        --wired-radio-icon-color: purple;
+      }
       wired-radio {
         margin: 5px 0;
         font-family: "Roboto", sans-serif;
@@ -27,7 +32,9 @@ Radio button with hand-drawn look
 ```html
 <wired-radio text="Radio One"></wired-radio>
 <wired-radio text="Radio Two" checked></wired-radio>
+<wired-radio text="Disabled" disabled></wired-radio>
 <wired-radio text="Radio Three" class="blue"></wired-radio>
+<wired-radio text="Purple Green" class="prplgrn"></wired-radio>
 ```
 
 View wired-radio-group to see the case where only one radio is selected.
