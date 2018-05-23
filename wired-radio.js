@@ -32,7 +32,7 @@ export class WiredRadio extends LitElement {
         display: inline-block;
         position: relative;
         padding: 5px;
-        font-family: sans-serif;
+        font-family: inherit;
         width: 150px;
         outline: none;
       }
