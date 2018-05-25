@@ -35,6 +35,7 @@ export class WiredRadio extends LitElement {
         font-family: inherit;
         width: 150px;
         outline: none;
+        cursor: pointer;
       }
     
       :host(.pending) {
